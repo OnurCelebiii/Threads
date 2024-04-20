@@ -4,9 +4,9 @@
 #include <unistd.h>
 
 void *welcomeThreads(void *arg) {
-    printf("Welcome Threads\n");
+    printf("Welcome Threads Pid: %d\n", getpid());
     sleep(3);
-    printf("Goodbye Threads\n");
+    printf("Goodbye Threads Pid: %d\n", getpid());
     return NULL;
 }
 
