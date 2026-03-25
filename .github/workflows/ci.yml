@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build-and-test:
+    name: Build & Run (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-22.04]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y gcc
+
+      - name: Build WelcomeThreads
+        run: gcc -g -pthread WelcomeThreads.c -o welcome -Wall -Wextra
+
+      - name: Build MutexUsage
+        run: gcc -g -pthread MutexUsage.c -o mutex -Wall -Wextra
+
+      - name: Build CreateThreadsWithLoop
+        run: gcc -g -pthread CreateThreadsWithLoop.c -o loop -Wall -Wextra
+
+      - name: Build SumArrayWithThread
+        run: gcc -g -pthread SumArrayWithThread.c -o sum -Wall -Wextra
+
+      - name: Build ThreadSortingAlgorithm
+        run: gcc -g -pthread ThreadSortingAlgorithm.c -o sort -Wall -Wextra
+
+      - name: Run WelcomeThreads
+        run: timeout 10 ./welcome
+
+      - name: Run MutexUsage (expect x = 2000000)
+        run: |
+          output=$(./mutex)
+          echo "$output"
+          [ "$output" = "x = 2000000" ] || (echo "FAIL: expected 'x = 2000000'" && exit 1)
+
+      - name: Run CreateThreadsWithLoop (expect x = 4000000)
+        run: |
+          output=$(./loop)
+          echo "$output"
+          [ "$output" = "x = 4000000" ] || (echo "FAIL: expected 'x = 4000000'" && exit 1)
+
+      - name: Run SumArrayWithThread (expect 45)
+        run: |
+          output=$(./sum)
+          echo "$output"
+          echo "$output" | grep -q "45" || (echo "FAIL: expected sum 45" && exit 1)
+
+      - name: Run ThreadSortingAlgorithm (expect sorted output)
+        run: |
+          output=$(./sort)
+          echo "$output"
+          [ "$output" = "0 1 2 3 4 5 6 7 8 9" ] || (echo "FAIL: expected '0 1 2 3 4 5 6 7 8 9'" && exit 1)
+
+      - name: Clean up binaries
+        run: rm -f welcome mutex loop sum sort
