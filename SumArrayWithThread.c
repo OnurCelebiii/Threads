@@ -22,7 +22,7 @@ void *sumArray(void *arg) {
     return arg;
 }
 
-int main(int argc, char *argv[]) {
+int main(void) {
     pthread_t th[2];
     int *args[2];
 

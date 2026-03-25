@@ -32,6 +32,7 @@ void *arrySort(void *arg) {
 }
 
 void *arrMergeSort(void *arg) {
+    (void)arg;
     int i = 0, j = 5;
     int temp[10];
 
@@ -53,7 +54,7 @@ void *arrMergeSort(void *arg) {
     return NULL;
 }
 
-int main(int argc, char *argv[]) {
+int main(void) {
     pthread_t sortTh[2];
 
     // 1. Adim: iki sort thread'ini olustur
