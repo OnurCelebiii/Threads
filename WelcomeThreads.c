@@ -11,13 +11,14 @@
 // FIX:  Donus degeri kontrol edilerek hata durumunda program sonlandiriliyor.
 
 void *welcomeThreads(void *arg) {
+    (void)arg;
     printf("Welcome Threads - Thread ID: %lu\n", (unsigned long)pthread_self());
     sleep(3);
     printf("Goodbye Threads - Thread ID: %lu\n", (unsigned long)pthread_self());
     return NULL;
 }
 
-int main(int argc, char *argv[]) {
+int main(void) {
     pthread_t t1, t2;
 
     if (pthread_create(&t1, NULL, welcomeThreads, NULL) != 0) {
